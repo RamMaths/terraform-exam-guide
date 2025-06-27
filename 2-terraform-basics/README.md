@@ -105,4 +105,12 @@ Terraform has a built-in command called terraform state for advanced state manag
 
 ```sh
 terraform state list
-``` 
+```
+
+### Destroy
+
+The `terraform destroy` command terminates resources managed by your Terraform project. This command is the inverse of `terraform apply` in that it terminates all the resources specified in your Terraform state. I does *not* destroy resources running elsewhere that are not managed by the current Terraform project.
+
+### Variables
+
+The `instance_name` variable block will default to its default value ("ExampleAppServerInstance") unless you declare a different value. In this example (`./variables`) we have a `variables.tf` file.
