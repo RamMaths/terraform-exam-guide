@@ -10,6 +10,7 @@ terraform {
 }
 
 provider "aws" {
+  profile = "ramses"
   region  = "us-west-2"
 }
 
