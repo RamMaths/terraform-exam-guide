@@ -99,6 +99,10 @@ The Terraform state file is the only way Terraform can track which resources it 
 terraform show
 ```
 
+### Benefits of state
+
+During execution, terraform will examine the state of the currently running infrastructure, determine what differences exist between the current state and the revised desired state, and indicate the necessary changes that must be applied. When approved to proceed, only the necessary changes will be applied, leaving existing, valid infrastructure untouched.
+
 ### Manually Managing State
 
 Terraform has a built-in command called terraform state for advanced state management. Use the list subcommand to list of the resources in your project's state.
