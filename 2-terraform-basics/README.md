@@ -22,52 +22,6 @@ Is a manual review of what will add, change or destroy before you apply changes
 
 ## Terraform syntaxis
 
-### Hashicrop configuration language
-
-Terraform is written in HCL (HashiCorp Configuration Language) and is designed to be both human and machine readable. HCL is built using code configuration blocks which typically follow the following syntax:
-
-```terraform
-# Template
-<BLOCK TYPE> "<BLOCK LABEL>" "<BLOCK LABEL>" {
-    # Block body
-    <IDENTIFIER> = <EXPRESSION> # Argument
-}
-
-# AWS EC2 Example
-resource "aws_instance" "web_server" { # BLOCK
-    ami = "ami-04d29b6f966df1537" # Argument
-    instance_type = var.instance_type # Argument with value as expression (Variable value re
-}
-```
-
-Terraform Code Configuration block types include:
-
-- Terraform Settings Block
-- Terraform Provider Block
-- Terraform Resource Block
-- Terraform Data Block
-- Terraform Input Variables Block
-- Terraform Local Variables Block
-- Terraform Output Values Block
-- Terraform Modules Block
-
-
-### Terraform Block
-
-The `terraform {}` block conatins Terraform settings, including the required providers. Terraform will use to provision your infrastructure. For each provider, the `source` attribute defines an optional hostname, a namespace, and a provider type
-
-You can also set a version constraint for each provider defined in the required_providers block. The `version` attribute is optional, but we recommend using it to constrain the provider version so that Terraform does not install a version of the provider that does not work with your configuration.
-
-### Providers
-
-The `provider` block configures the specified provider, in this case `aws`. A provider is a plugin that Terraform uses to create and manage your resources. You can use multiple provider blocks in your terraform configuration to manage resources from different providers. You can even use different providers together.
-
-### Resources
-
-Use `resource` blocks to define components of your infrastructure. A resource might be a physical or virtual component such as an EC2 instance, or it can be a logical resource such as a Heroku application.
-
-Resource blocks have two strings before the block: the resource type and the resource name. Together the resoruce type and name form a unique ID fo the resource.
-
 ### Initializing the directory
 
 Initializing a configuration directory downloads and installs the providers defined in the configuration, which in this case is the `aws` provider.
@@ -151,6 +105,91 @@ terraform state list
 
 The `terraform destroy` command terminates resources managed by your Terraform project. This command is the inverse of `terraform apply` in that it terminates all the resources specified in your Terraform state. I does *not* destroy resources running elsewhere that are not managed by the current Terraform project.
 
-### Variables
 
-The `instance_name` variable block will default to its default value ("ExampleAppServerInstance") unless you declare a different value. In this example (`./variables`) we have a `variables.tf` file.
+### Hashicrop configuration language
+
+Terraform is written in HCL (HashiCorp Configuration Language) and is designed to be both human and machine readable. HCL is built using code configuration blocks which typically follow the following syntax:
+
+```terraform
+# Template
+<BLOCK TYPE> "<BLOCK LABEL>" "<BLOCK LABEL>" {
+    # Block body
+    <IDENTIFIER> = <EXPRESSION> # Argument
+}
+
+# AWS EC2 Example
+resource "aws_instance" "web_server" { # BLOCK
+    ami = "ami-04d29b6f966df1537" # Argument
+    instance_type = var.instance_type # Argument with value as expression (Variable value re
+}
+```
+
+Terraform Code Configuration block types include:
+
+- Terraform Settings Block
+- Terraform Provider Block
+- Terraform Resource Block
+- Terraform Data Block
+- Terraform Input Variables Block
+- Terraform Local Variables Block
+- Terraform Output Values Block
+- Terraform Modules Block
+
+
+### Terraform Block
+
+The `terraform {}` block conatins Terraform settings, including the required providers. Terraform will use to provision your infrastructure. For each provider, the `source` attribute defines an optional hostname, a namespace, and a provider type
+
+You can also set a version constraint for each provider defined in the required_providers block. The `version` attribute is optional, but we recommend using it to constrain the provider version so that Terraform does not install a version of the provider that does not work with your configuration.
+
+### Provider Block
+
+The `provider` block configures the specified provider, in this case `aws`. A provider is a plugin that Terraform uses to create and manage your resources. You can use multiple provider blocks in your terraform configuration to manage resources from different providers. You can even use different providers together.
+
+### Resource Block
+
+Use `resource` blocks to define components of your infrastructure. A resource might be a physical or virtual component such as an EC2 instance, or it can be a logical resource such as a Heroku application.
+
+Resource blocks have two strings before the block: the resource type and the resource name. Together the resoruce type and name form a unique ID fo the resource.
+
+### Input Variables Block
+
+Input variables (commonly referenced as just ‘variables’) are often declared in a separate file called variables.tf, although this is not required. Most people will consolidate variable declaration in this file for organization and simplification of management. Each variable used in a Terraform configuration must be declared before it can be used.
+
+#### Template
+
+```terraform
+variable “<VARIABLE_NAME>” {
+    # Block body
+    type = <VARIABLE_TYPE>
+    description = <DESCRIPTION>
+    default = <EXPRESSION>
+    sensitive = <BOOLEAN>
+    validation = <RULES>
+}
+```
+
+#### Example
+
+```terraform
+variable "aws_region" {
+    type = string
+    description = "region used to deploy workloads"
+    default = "us-east-1"
+    validation {
+        condition = can(regex("^us-", var.aws_region))
+        error_message = "The aws_region value must be a valid region in the
+        USA, starting with \"us-\"."
+    }
+}
+```
+
+The value of a Terraform variable can be set multiple ways, including setting a default value, interactively passing a value when executing a terraform plan and apply, using an environment varriable, or setting the value in a `.tfvars` file. Each of these different options follows a strict order of precedence that Terraform uses to set the value of a variable.
+
+![Variables](../assets/variables.png)
+
+### Local Variables Block
+
+Locals are very similar to traditional input variables and can be referred to throughout your Terraform configuration. Locals are often used to give a name to the result of an expression to simplify your code and make it easier to read.
+
+Locals are not set directly by the user/machine executing the Terraform configuration, and the values don’t change between or during the Terraform workflow (`init`, `plan`, `apply`).
