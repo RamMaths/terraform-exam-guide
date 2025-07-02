@@ -1,17 +1,5 @@
 # Terraform Basics
 
-## Providers
-
-Providers define individual units of infrastructure, for example compute instances or private networks, as resources. You can compose resources from different providers into reusable Terraform configurations called modules, and manage them with a consistent language and workflow.
-
-To deploy infrastructure with Terraform:
-
-- Scope - Identify the infrastructure for your project.
-- Author - Write the configuration for your infrastructure.
-- Initialize - Install the plugins Terraform needs to manage the infrastructure.
-- Plan - Preview the changes Terraform will make to match your configuration.
-- Apply - Make the planned changes.
-
 ## Terraform lifecycle
 
 ![Lifecycle](../assets/lifecycle.png)
@@ -24,14 +12,7 @@ To deploy infrastructure with Terraform:
 
 Terraform uses Change Automation in the form of <mark>Execution Plans</mark> and <mark>Resources graphs</mark> to apply and review complex <mark>changesets</mark>
 
-## Execution plans
-
-Is a manual review of what will add, change or destroy before you apply changes eg. terraform apply. You can visualize an execution plan using the `terraform graph` command. Terraform will output a GraphViz file.
-
-```sh
-terraform graph | dot -Tsvg > graph.svg
-```
-
+Is a manual review of what will add, change or destroy before you apply changes eg. terraform apply. 
 ## Terraform Core and Terraform Plugins
 
 - Core: Uses remote procedure calls (RPC) to communicate with Terraform Plugins
@@ -40,6 +21,36 @@ terraform graph | dot -Tsvg > graph.svg
 ![CorePlugins](../assets/corevsplugins.png)
 
 ## Terraform syntaxis
+
+### Hashicrop configuration language
+
+Terraform is written in HCL (HashiCorp Configuration Language) and is designed to be both human and machine readable. HCL is built using code configuration blocks which typically follow the following syntax:
+
+```terraform
+# Template
+<BLOCK TYPE> "<BLOCK LABEL>" "<BLOCK LABEL>" {
+    # Block body
+    <IDENTIFIER> = <EXPRESSION> # Argument
+}
+
+# AWS EC2 Example
+resource "aws_instance" "web_server" { # BLOCK
+    ami = "ami-04d29b6f966df1537" # Argument
+    instance_type = var.instance_type # Argument with value as expression (Variable value re
+}
+```
+
+Terraform Code Configuration block types include:
+
+- Terraform Settings Block
+- Terraform Provider Block
+- Terraform Resource Block
+- Terraform Data Block
+- Terraform Input Variables Block
+- Terraform Local Variables Block
+- Terraform Output Values Block
+- Terraform Modules Block
+
 
 ### Terraform Block
 
@@ -75,6 +86,31 @@ You can also make sure your configuration is syntactically valid and internally 
 
 ```sh
 terraform validate
+```
+
+### Terraform Plan
+
+Terraform has a dry run mode where you can preview what Terraform will change without making any actual changes to your infrastructure. This dry run is performed by running a `terraform plan`.
+
+In your terminal, you can run a plan as shown below to see the changes required for Terraform to reach your desired state you defined in your code. This is equivalent to running Terraform in a “dry” mode.
+
+```sh
+terraform plan
+```
+
+> Note: Terraform also has the concept of planning out changes to a file. This is useful to ensure you only apply what has been planned previously. Try running a plan again but this time passing an -out flag as shown below.
+
+```sh
+terraform plan -out myplan
+terraform apply myplan
+```
+
+This will create a plan file that Terraform can use during an `apply`.
+
+You can visualize an execution plan using the `terraform graph` command. Terraform will output a GraphViz file.
+
+```sh
+terraform graph | dot -Tsvg > graph.svg
 ```
 
 ### Create infrastructure
