@@ -132,8 +132,9 @@ Terraform Code Configuration block types include:
 - Terraform Input Variables Block
 - Terraform Local Variables Block
 - Terraform Data Block
-- Terraform Output Values Block
 - Terraform Modules Block
+- Terraform Output Values Block
+- Terraform Provisioners
 
 
 ### Terraform Block
@@ -208,3 +209,30 @@ data “<DATA TYPE>” “<DATA LOCAL NAME>” {
     <IDENTIFIER> = <EXPRESSION> # Argument
 }
 ```
+
+### Modules Block
+
+A module is used to combine resources that are frequently used together into a reusable container. Individual modules can be used to construct a holistic solution required to deploy applications. The goal is to develop modules that can be reused in a variety of different ways, therefore reducing the amount of code that needs to be developed. Modules are called by a `parent` or `root` module, and any modules called by the parent module are known as `child` modules.
+
+Modules can be sourced from a number of different locations, including remote, such as the Terraform module registry, or locally within a folder. While not required, local modules are commonly saved in a folder named `modules`.
+
+![Module](../assets/module.png)
+
+Modules are defined in a module block with a unique name for each module. Within the module block, the source indicates the local path of the module or the remote source where Terraform should download the module.
+
+#### Template
+
+```terraform
+module “<MODULE_NAME>” {
+    # Block body
+    source = <MODULE_SOURCE>
+    <INPUT_NAME> = <DESCRIPTION> #Inputs
+    <INPUT_NAME> = <DESCRIPTION> #Inputs
+}
+```
+
+### Output Values Block
+
+### Terraform Provisioners
+
+Provisioners can be used to model specific actions on the local machine or on a remote machine in order to prepare servers or other infrastructure objects for service.
