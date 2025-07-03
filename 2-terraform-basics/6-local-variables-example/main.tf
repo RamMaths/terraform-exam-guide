@@ -1,6 +1,6 @@
 # Configure the AWS Provider
 provider "aws" {
-  region = "us-east-1"
+  region  = "us-east-1"
   profile = "ramses"
 }
 
@@ -9,7 +9,7 @@ data "aws_availability_zones" "available" {}
 data "aws_region" "current" {}
 
 locals {
-  team = "api_mgmt_dev"
+  team        = "api_mgmt_dev"
   application = "corp_api"
   server_name = "ec2-${var.environment}-api-${var.variables_sub_az}"
 }
@@ -22,6 +22,7 @@ resource "aws_vpc" "vpc" {
     Name        = var.vpc_name
     Environment = "demo_environment"
     Terraform   = "true"
+    Region      = data.aws_region.current.region
   }
 }
 
@@ -57,8 +58,8 @@ resource "aws_route_table" "public_route_table" {
   vpc_id = aws_vpc.vpc.id
 
   route {
-    cidr_block     = "0.0.0.0/0"
-    gateway_id     = aws_internet_gateway.internet_gateway.id
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.internet_gateway.id
     #nat_gateway_id = aws_nat_gateway.nat_gateway.id
   }
   tags = {
@@ -71,7 +72,7 @@ resource "aws_route_table" "private_route_table" {
   vpc_id = aws_vpc.vpc.id
 
   route {
-    cidr_block     = "0.0.0.0/0"
+    cidr_block = "0.0.0.0/0"
     # gateway_id     = aws_internet_gateway.internet_gateway.id
     nat_gateway_id = aws_nat_gateway.nat_gateway.id
   }
@@ -146,46 +147,46 @@ resource "aws_instance" "web_server" {
   instance_type = "t3.micro"
   subnet_id     = aws_subnet.public_subnets["public_subnet_1"].id
   tags = {
-    Name = "Ubuntu EC2 Server"
+    Name  = "Ubuntu EC2 Server"
     Owner = local.team
-    App = local.application
+    App   = local.application
   }
 }
 
 resource "aws_s3_bucket" "my-new-s3-bucket" {
   bucket = "my-new-s3-bucket-${random_id.randomness.hex}"
   tags = {
-    Name = "My S3 Bucket"
+    Name    = "My S3 Bucket"
     Purpose = "Intro to Resource Blocks Lab"
   }
 }
 
-resource "aws_s3_bucket_ownership_controls" "my_new_bucket_acl" {   
-  bucket = aws_s3_bucket.my-new-s3-bucket.id  
-  rule {     
-    object_ownership = "BucketOwnerPreferred"   
+resource "aws_s3_bucket_ownership_controls" "my_new_bucket_acl" {
+  bucket = aws_s3_bucket.my-new-s3-bucket.id
+  rule {
+    object_ownership = "BucketOwnerPreferred"
   }
 }
 
- resource "aws_security_group" "my-new-security-group" {
-   name = "web_server_inbound"
-   description = "Allow inbound traffic on tcp/443"
-   vpc_id = aws_vpc.vpc.id
+resource "aws_security_group" "my-new-security-group" {
+  name        = "web_server_inbound"
+  description = "Allow inbound traffic on tcp/443"
+  vpc_id      = aws_vpc.vpc.id
 
-   ingress {
-     description = "Allow 443 from the Internet"
-     from_port = 443
-     to_port = 443
-     protocol = "tcp"
-     cidr_blocks = ["0.0.0.0/0"]
-   }
+  ingress {
+    description = "Allow 443 from the Internet"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
-   tags = {
-     Name = "web_server_inbound"
-     Purpose = "Intro to Resource Blocks Lab"
-   }
- }
+  tags = {
+    Name    = "web_server_inbound"
+    Purpose = "Intro to Resource Blocks Lab"
+  }
+}
 
- resource "random_id" "randomness" {
-   byte_length = 16
- }
+resource "random_id" "randomness" {
+  byte_length = 16
+}
