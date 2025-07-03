@@ -129,9 +129,9 @@ Terraform Code Configuration block types include:
 - Terraform Settings Block
 - Terraform Provider Block
 - Terraform Resource Block
-- Terraform Data Block
 - Terraform Input Variables Block
 - Terraform Local Variables Block
+- Terraform Data Block
 - Terraform Output Values Block
 - Terraform Modules Block
 
@@ -193,3 +193,18 @@ The value of a Terraform variable can be set multiple ways, including setting a 
 Locals are very similar to traditional input variables and can be referred to throughout your Terraform configuration. Locals are often used to give a name to the result of an expression to simplify your code and make it easier to read.
 
 Locals are not set directly by the user/machine executing the Terraform configuration, and the values don’t change between or during the Terraform workflow (`init`, `plan`, `apply`).
+
+### Data Block
+
+Data sources are used in Terraform to load or query data from APIs or other Terraform workspaces. You can use this data to make your project’s configuration more flexible, and to connect workspaces that manage different parts of your infrastructure.
+
+To use a data source, you declare it using a `data` block in your Terraform configuration. Terraform will perform the query and store the returned data. You can then use that data throughout your Terraform configuration file where it makes sense.
+
+#### Template
+
+```terraform
+data “<DATA TYPE>” “<DATA LOCAL NAME>” {
+    # Block body
+    <IDENTIFIER> = <EXPRESSION> # Argument
+}
+```
