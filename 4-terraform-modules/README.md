@@ -9,3 +9,21 @@ To make a Terraform module configurable you can add input parameters to the modu
 ![Modules](../assets/modules-outputs.png)
 
 ## Terraform Module Scope
+
+### Scoping Module Inputs and Outputs
+
+Modules are simply terraform configuration files that have optional/required inputs and will return a specifed number of outputs. The configuration within the module can be akin to a black box, as the module is abstracting away the configuration blocks which it contains. The module code for child modules is still typically availabe for us to review if we like, but not required to be able to get resources built out without having to worry about all of the details within the child module.
+
+![Scoping](../assets/module-scoping.png)
+
+### Invalid Module References
+
+Module outputs are the only supported way for users to get information about resources configured within the child module. Individual resource arguments are not accessible outside the child module.
+
+### Notes about building Terraform Modules
+
+When building a module, consider three areas:
+
+- **Encapsulation**: Group infrastructure that is always deployed together. Including more infrastructure in a module makes it easier for an end user to deploy that infrastructure but makes the module’s purpose and requirements harder to understand
+- **Privileges**: Restrict modules to privilege boundaries. If infrastructure in the module is the responsibility of more than one group, using that module could accidentally violate segregation of duties. Only group resources within privilege boundaries to increase infrastructure segregation and secure your infrastructure
+- **Volatility**: Separate long-lived infrastructure from short-lived. For example, database infrastructure is relatively static while teams could deploy application servers multiple times a day. Managing database infrastructure in the same module as application servers exposes infrastructure that stores state to unnecessary churn and risk.
