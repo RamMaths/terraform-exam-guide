@@ -1,11 +1,12 @@
 terraform {
   required_version = ">= 1.0.0"
 
-  backend "s3" {
-    bucket  = "prueba-terraform-rmata-001"
-    key     = "prod/aws_infra"
-    region  = "us-east-1"
-    profile = "ramses"
+  backend "remote" {
+    hostname  = "app.terraform.io"
+    organization = "RamsesMata"
+    workspaces {
+      name = "my-aws-app"
+    }
   }
 
   required_providers {

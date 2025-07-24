@@ -1,7 +1,6 @@
 # Configure the AWS Provider
 provider "aws" {
   region  = "us-east-1"
-  profile = "ramses"
 }
 
 #Retrieve the list of AZs in the current AWS region
@@ -144,7 +143,7 @@ data "aws_ami" "ubuntu" {
 # Terraform Resource Block - To Build EC2 instance in Public Subnet
 resource "aws_instance" "web_server" {
   ami                         = data.aws_ami.ubuntu.id
-  instance_type               = "t2.micro"
+  instance_type               = "t3.micro"
   subnet_id                   = aws_subnet.public_subnets["public_subnet_1"].id
   security_groups             = [aws_security_group.vpc-web.id, aws_security_group.ingress-ssh.id]
   associate_public_ip_address = true
